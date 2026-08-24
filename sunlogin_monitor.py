@@ -95,25 +95,23 @@ def parse_notification(payload):
     return None, None
 
 def translate_to_english(title, content):
-    """将通知翻译为英文（Server酱 数据库不支持中文）"""
+    """将通知翻译为简洁格式：设备名称 online/offline"""
     # 判断上线/下线
     if "下线" in title or "下线" in content:
-        status = "OFFLINE"
+        status = "offline"
     elif "上线" in title or "上线" in content:
-        status = "ONLINE"
+        status = "online"
     else:
-        status = "ALERT"
+        status = "alert"
     
-    # 提取设备名
-    device = content
-    device = re.sub(r"(下线啦|上线啦|下线|上线)", "", device)
-    device = device.strip()
+    # 提取设备名（去掉"下线啦"或"上线啦"后缀）
+    device = re.sub(r"(下线啦|上线啦|下线|上线)", "", content or "").strip()
     
-    result_parts = [f"Sunlogin Device {status}"]
+    # 简洁格式：设备名称 online/offline
     if device:
-        result_parts.append(f"Device: {device}")
-    
-    return result_parts
+        return [f"{device} {status}"]
+    else:
+        return [f"Device {status}"]
 
 def send_wechat(sendkey, title_text, desp_text):
     """通过 Server酱 发送微信通知"""
