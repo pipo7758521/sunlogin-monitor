@@ -7,8 +7,7 @@
 ```
 向日葵监控/
 ├── sunlogin_monitor.py      # 监控主脚本（核心程序）
-├── config.ini               # 配置文件（已预配置好）
-├── 启动监控.bat             # 双击运行（推荐）
+├── config.ini               # 配置文件
 ├── 使用说明.txt             # 使用指南
 ├── README.md                # 本文件
 └── last_notify_id.txt       # 记录文件（自动生成，勿删）
@@ -16,30 +15,20 @@
 
 ## 🚀 快速开始
 
-### 1. 检查配置
-打开 `config.ini` 文件，确认 SendKey 是否正确：
+### 1. 配置 SendKey
+打开 `config.ini` 文件，填入你的 Server酱 SendKey：
 ```ini
 [通知设置]
-SendKey = [REDACTED-SendKey]
+SendKey = 你的SendKey
 CheckInterval = 5
 ```
-**SendKey 已预填充**，如需更换可访问 https://sct.ftqq.com/ 获取。
+获取 SendKey：访问 https://sct.ftqq.com/ 注册并获取
 
 ### 2. 运行程序
-双击 `启动监控.bat` 即可启动。
-
-控制台会显示：
+```bash
+python sunlogin_monitor.py
 ```
-=======================================================
-向日葵主机上下线监控 (可配置版)
-=======================================================
-配置文件: config.ini
-SendKey: SCT403***
-数据库: C:\...\wpndatabase.db
-检测间隔: 5 秒
--------------------------------------------------------
-运行中，按 Ctrl+C 停止...
-```
+或双击 `启动监控.bat`
 
 ### 3. 接收通知
 当向日葵主机上线/下线时，微信会收到类似这样的通知：
@@ -67,7 +56,7 @@ HandlerId = 90                # 向日葵应用的ID
 ## 🔧 技术原理
 
 1. **数据源**：读取 Windows 通知中心数据库
-   - 路径：`C:\Users\...\AppData\Local\Microsoft\Windows\Notifications\wpndatabase.db`
+   - 路径：`C:\Users\{用户名}\AppData\Local\Microsoft\Windows\Notifications\wpndatabase.db`
    - 向日葵 HandlerId: 90
 
 2. **通知格式**：解析 XML 格式的 Toast 通知
@@ -91,20 +80,11 @@ HandlerId = 90                # 向日葵应用的ID
 - ⚠️ 运行期间不要关闭命令行窗口
 - ⚠️ 不要删除 `last_notify_id.txt` 文件（会重复发送通知）
 - ⚠️ Windows 系统必须安装了向日葵客户端并配置了被控主机
-
-## ✅ 测试结果
-
-已验证可正常监控 20 台主机的上下线通知：
-
-| 时间 | 设备 | 事件 | 通知 |
-|------|------|------|------|
-| 08-24 09:27:06 | Device-1 | 下线 | ✅ OFFLINE |
-| 08-24 09:27:13 | Device-1 | 上线 | ✅ ONLINE |
-| 08-24 09:28:49 | Device-2 | 下线 | ✅ OFFLINE |
+- ⚠️ DBPath 需要根据实际用户名修改
 
 ## 📝 更新日志
 
-**v1.0 (2025-08-24)**
+**v1.0**
 - ✅ 支持读取 Windows 通知中心数据库
 - ✅ 自动识别向日葵主机上下线通知
 - ✅ 翻译为英文发送到微信（解决中文编码问题）
