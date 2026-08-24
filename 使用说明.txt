@@ -1,0 +1,41 @@
+向日葵主机上下线监控工具使用说明
+================================
+
+【文件说明】
+- sunlogin_monitor.py    : 监控主脚本
+- config.ini            : 配置文件
+- 启动监控.bat          : 双击运行
+- last_notify_id.txt    : 记录文件（自动生成）
+- 使用说明.txt          : 本说明文件
+
+【使用步骤】
+1. 双击"启动监控.bat"启动程序
+2. 程序会显示当前状态和监控结果
+3. 当检测到向日葵主机上下线时，会自动发送微信通知
+
+【配置说明】
+首次运行会自动创建 config.ini，配置文件格式如下：
+
+[通知设置]
+SendKey = 你的Server酱SendKey
+CheckInterval = 5
+
+[数据库设置]
+DBPath = C:\Users\{用户名}\AppData\Local\Microsoft\Windows\Notifications\wpndatabase.db
+HandlerId = 90
+
+【注意事项】
+- 请确保已安装Python环境
+- 请确保已安装requests库：pip install requests
+- 程序运行时不要关闭命令行窗口
+- 如需开机自启动，将"启动监控.bat"的快捷方式放入启动文件夹
+
+【如何获取Server酱SendKey】
+1. 访问 https://sct.ftqq.com/
+2. 微信扫码登录
+3. 复制你的SendKey
+
+【工作原理】
+- 监控Windows通知数据库中的向日葵通知
+- 解析通知内容（主机上线/下线）
+- 翻译为英文后通过Server酱发送到微信
