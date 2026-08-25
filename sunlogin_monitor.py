@@ -43,13 +43,13 @@ def load_config():
             'DBPath': r'C:\Users\{用户名}\AppData\Local\Microsoft\Windows\Notifications\wpndatabase.db',
             'HandlerId': '90'
         }
-        with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
+        with open(CONFIG_FILE, 'w', encoding='utf-8-sig') as f:
             config.write(f)
         print(f"已创建配置文件: {CONFIG_FILE}")
         print("请修改配置文件后重新运行脚本")
         return None
     
-    config.read(CONFIG_FILE, encoding='utf-8')
+    config.read(CONFIG_FILE, encoding='utf-8-sig')
     
     return {
         'sendkey': config.get('通知设置', 'SendKey', fallback=''),
