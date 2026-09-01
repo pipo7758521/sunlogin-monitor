@@ -264,8 +264,25 @@ def main():
         time.sleep(config['check_interval'])
 
 if __name__ == "__main__":
+    args = [a for a in sys.argv[1:] if a.strip()]
+
+    # -h / --help：显示帮助
+    if any(a in ("-h", "--help", "-help", "help") for a in args):
+        print("=" * 55)
+        print("向日葵主机上下线监控 - 用法")
+        print("=" * 55)
+        print("（无参数）   进入监控模式，实时转发通知到微信")
+        print("--list      列出当前机器所有可监控的 Toast 程序 AppId")
+        print("-h/--help   显示本帮助")
+        print("-" * 55)
+        print("示例：")
+        print("  SunloginMonitor.exe            # 监控")
+        print("  SunloginMonitor.exe --list     # 查看可监控程序")
+        input("按回车键退出...")
+        sys.exit(0)
+
     # --list：列出所有可监控的 Toast 通知程序，无需 Token
-    if len(sys.argv) > 1 and "--list" in sys.argv:
+    if "--list" in args:
         try:
             _cfg = load_config()
             _db = _cfg["db_path"] if _cfg and _cfg.get("db_path") else ""
@@ -275,6 +292,14 @@ if __name__ == "__main__":
                 list_handlers(_db)
         except Exception as e:
             print(f"执行 --list 失败: {e}")
+        input("按回车键退出...")
+        sys.exit(0)
+
+    # 无法识别的参数：提示帮助，而非静默进入监控
+    if args:
+        print(f"未知参数: {' '.join(args)}")
+        print("可用参数：--list 列出可监控程序；-h/--help 显示帮助")
+        print("（不带参数运行则进入监控模式）")
         input("按回车键退出...")
         sys.exit(0)
 
