@@ -55,6 +55,19 @@ HandlerId = 90                 # 兜底值（无法自动匹配时使用，可�
 
 > **关于 HandlerId 的自动探测**：Windows 通知数据库里的 `HandlerId`（如 90）是系统按启动顺序分配的整数，**换机器/重装系统后可能变化**。脚本通过更稳定的 `AppID`（`oray.sunlogin`）自动查询出正确的 HandlerId，无需手动关心数字。
 
+### 监控其他程序（可选）
+脚本不只监控向日葵，任何会弹 Windows Toast 通知的程序都能监控。运行以下命令查看当前机器可监控的程序：
+```bash
+python sunlogin_monitor.py --list
+```
+会显示类似：
+```
+ HandlerId |    通知数 | AppId
+        90 |     17 | oray.sunlogin
+        92 |      1 | Microsoft.Explorer.Notification.{A9827327-...}
+```
+把你想要的程序 `AppId` 填入 `config.ini` 的 `AppID` 字段，即可监控该程序的通知。
+
 ### 开机自启动（可选）
 1. 按 `Win + R`，输入 `shell:startup`
 2. 回车打开启动文件夹

@@ -78,6 +78,43 @@ def resolve_handler_id(db_path, app_id, fallback_id):
         print(f"查询 AppId 失败: {e}")
     return fallback_id, False
 
+def list_handlers(db_path):
+    """列出所有可监控的 Toast 通知程序（AppId）。
+    返回 True 表示列表已正常展示。
+    可监控条件：该程序已注册通知能力，且实际发过通知。"""
+    try:
+        conn = sqlite3.connect("file:" + db_path + "?mode=ro", uri=True)
+        cur = conn.cursor()
+        # 实际发过通知的 App（有真实通知记录，才可能被监控到）
+        rows = cur.execute(
+            "SELECT h.RecordId, h.PrimaryId, COUNT(n.Id) AS cnt "
+            "FROM NotificationHandler h "
+            "LEFT JOIN Notification n ON n.HandlerId = h.RecordId "
+            "WHERE h.HandlerType='app:desktop' OR h.HandlerType='app:immersive' "
+            "GROUP BY h.RecordId "
+            "ORDER BY cnt DESC, h.RecordId"
+        ).fetchall()
+        conn.close()
+
+        print("=" * 60)
+        print("可监控的 Toast 通知程序（已实际发过通知）")
+        print("=" * 60)
+        print(f"{'HandlerId':>10} | {'通知数':>6} | AppId")
+        print("-" * 60)
+        found = False
+        for rid, pid, cnt in rows:
+            if cnt > 0:
+                print(f"{rid:>10} | {cnt:>6} | {pid}")
+                found = True
+        if not found:
+            print("（未发现任何已发过通知的程序）")
+        print("-" * 60)
+        print("提示：把上表中你想监控程序的 AppId 填入 config.ini 的 [数据库设置] AppID 字段即可。")
+        return True
+    except Exception as e:
+        print(f"读取数据库失败: {e}")
+        return False
+
 def filetime_to_dt(ft):
     if not ft:
         return "N/A"
@@ -227,6 +264,20 @@ def main():
         time.sleep(config['check_interval'])
 
 if __name__ == "__main__":
+    # --list：列出所有可监控的 Toast 通知程序，无需 Token
+    if len(sys.argv) > 1 and "--list" in sys.argv:
+        try:
+            _cfg = load_config()
+            _db = _cfg["db_path"] if _cfg and _cfg.get("db_path") else ""
+            if not _db:
+                print("未找到数据库路径，请先在 config.ini 配置 DBPath")
+            else:
+                list_handlers(_db)
+        except Exception as e:
+            print(f"执行 --list 失败: {e}")
+        input("按回车键退出...")
+        sys.exit(0)
+
     try:
         main()
     except KeyboardInterrupt:
