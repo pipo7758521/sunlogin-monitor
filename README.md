@@ -29,10 +29,19 @@ CheckInterval = 5
 
 ### 2. 运行程序
 ```bash
-python sunlogin_monitor.py
+python sunlogin_monitor.py          # 进入监控模式
+python sunlogin_monitor.py --list   # 列出所有可监控的 Toast 程序
+python sunlogin_monitor.py -h       # 显示帮助
 ```
 
-或直接双击运行已打包的 `SunloginMonitor.exe`
+或直接双击运行已打包的 `SunloginMonitor.exe`（不带参数即进入监控模式）。
+
+> **命令参数说明**
+> | 参数 | 作用 |
+> |------|------|
+> | （无参数） | 进入监控模式，实时转发通知到微信 |
+> | `--list` | 列出当前机器所有可监控的 Toast 程序 AppId（无需 Token） |
+> | `-h` / `--help` | 显示帮助 |
 
 ### 3. 接收通知
 当向日葵主机上线/下线时，微信会收到类似这样的通知：
