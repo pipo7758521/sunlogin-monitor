@@ -49,8 +49,11 @@ CheckInterval = 5                  # 检测间隔（秒）
 
 [数据库设置]
 DBPath = C:\Users\{用户名}\AppData\Local\Microsoft\Windows\Notifications\wpndatabase.db
-HandlerId = 90                     # 通常在向日葵中无需修改
+AppID = oray.sunlogin          # 向日葵应用标识（稳定不变，自动匹配）
+HandlerId = 90                 # 兜底值（无法自动匹配时使用，可留空）
 ```
+
+> **关于 HandlerId 的自动探测**：Windows 通知数据库里的 `HandlerId`（如 90）是系统按启动顺序分配的整数，**换机器/重装系统后可能变化**。脚本通过更稳定的 `AppID`（`oray.sunlogin`）自动查询出正确的 HandlerId，无需手动关心数字。
 
 ### 开机自启动（可选）
 1. 按 `Win + R`，输入 `shell:startup`
@@ -61,7 +64,8 @@ HandlerId = 90                     # 通常在向日葵中无需修改
 
 1. **数据源**：读取 Windows 通知中心数据库
    - 路径：`C:\Users\{用户名}\AppData\Local\Microsoft\Windows\Notifications\wpndatabase.db`
-   - 向日葵 HandlerId: 90
+   - 向日葵标识：`NotificationHandler.PrimaryId = oray.sunlogin`（稳定，自动匹配）
+   - 数字 `HandlerId`（90）由系统分配，脚本按 `AppID` 自动探测
 
 2. **通知格式**：解析 XML 格式的 Toast 通知
    ```xml
