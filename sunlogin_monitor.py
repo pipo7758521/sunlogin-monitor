@@ -36,7 +36,7 @@ def load_config():
     if not os.path.exists(CONFIG_FILE):
         # 创建默认配置文件
         config['通知设置'] = {
-            'SendKey': '请在此填入你的SendKey',
+            'Token': '请在此填入你的PushPlus Token',
             'CheckInterval': '5'
         }
         config['数据库设置'] = {
@@ -52,7 +52,7 @@ def load_config():
     config.read(CONFIG_FILE, encoding='utf-8-sig')
     
     return {
-        'sendkey': config.get('通知设置', 'SendKey', fallback=''),
+        'token': config.get('通知设置', 'Token', fallback=''),
         'check_interval': config.getint('通知设置', 'CheckInterval', fallback=5),
         'db_path': config.get('数据库设置', 'DBPath', fallback=''),
         'handler_id': config.getint('数据库设置', 'HandlerId', fallback=90)
@@ -113,14 +113,19 @@ def translate_to_english(title, content):
     else:
         return [f"Device {status}"]
 
-def send_wechat(sendkey, title_text, desp_text):
-    """通过 Server酱 发送微信通知"""
+def send_wechat(token, title_text, content_text):
+    """通过 PushPlus 发送微信通知"""
     try:
-        url = f"https://sctapi.ftqq.com/{sendkey}.send"
-        data = {"text": title_text, "desp": desp_text}
+        url = "http://www.pushplus.plus/send"
+        data = {
+            "token": token,
+            "title": title_text,
+            "content": content_text,
+            "template": "txt"
+        }
         resp = requests.post(url, data=data, timeout=10)
         result = resp.json()
-        return result.get("code") == 0
+        return result.get("code") == 200
     except Exception as e:
         print(f"发送失败: {e}")
         return False
@@ -154,8 +159,9 @@ def main():
         return
     
     # 检查配置
-    if not config['sendkey'] or config['sendkey'] == '请在此填入你的SendKey':
-        print("错误：请先在 config.ini 中配置 SendKey")
+    if not config['token'] or config['token'] == '请在此填入你的PushPlus Token':
+        print("错误：请先在 config.ini 中配置 PushPlus Token")
+        print("获取地址：https://www.pushplus.plus/")
         input("按回车键退出...")
         return
     
@@ -165,7 +171,7 @@ def main():
         return
     
     print(f"配置文件: {CONFIG_FILE}")
-    print(f"SendKey: {config['sendkey'][:10]}***")
+    print(f"Token: {config['token'][:10]}***")
     print(f"数据库: {config['db_path']}")
     print(f"检测间隔: {config['check_interval']} 秒")
     print("-" * 55)
@@ -195,7 +201,7 @@ def main():
                 desp_en = "\n".join(parts)
                 
                 # 发送
-                if send_wechat(config['sendkey'], title_en, desp_en):
+                if send_wechat(config['token'], title_en, desp_en):
                     print(f"  ✓ 已发送到微信: {title_en}")
                 else:
                     print(f"  ✗ 发送失败")
