@@ -105,8 +105,14 @@ python sunlogin_monitor.py --list
 
 ## 🚀 发布版本
 
-- **v1.3**：从 Server酱 迁移到 PushPlus (v1.3 正式版，2026-09 验证通过)
-- **v1.1**：支持通知格式改为 `设备名称 online/offline`
+| 版本 | 说明 |
+|------|------|
+| **v1.6** | 新增 `--list` 命令，列出所有可监控的 Toast 程序 AppId（需配合 v1.4 的自动探测） |
+| **v1.5** | 完善 `--list` 功能与参数解析，不识别参数时提示帮助而非静默运行 |
+| **v1.4** | HandlerId 自动探测：按 `PrimaryId = oray.sunlogin` 自动匹配，无需手动填写数字 |
+| **v1.3** | 从 Server酱 迁移到 PushPlus（免费推送），配置项 `SendKey` → `Token` |
+| **v1.2** | 修复 config.ini UTF-8 BOM 导致的解析失败 |
+| **v1.1** | 通知格式改为 `设备名称 online/offline` |
 
 ## ⚠️ 注意事项
 
@@ -117,15 +123,32 @@ python sunlogin_monitor.py --list
 
 ## 📝 更新日志
 
+**v1.6 - 2026-09**
+- ✅ 新增 `--list` 命令：列出当前机器所有可监控的 Toast 程序 AppId（无需 Token）
+- ✅ 配合 v1.4 的 AppId 自动探测，实现通用化监控（不限向日葵）
+- ✅ 参数解析完善：无法识别的参数会提示帮助，不再静默进入监控
+
+**v1.5 - 2026-09**
+- ✅ 结合 `--list` 增强其他程序监控支持，方便查看可监控的应用列表
+- ✅ 补充命令用法说明
+
+**v1.4 - 2026-09**
+- ✅ HandlerId 自动探测：按 `NotificationHandler.PrimaryId = oray.sunlogin` 自动匹配
+- ✅ 兼容旧配置，找不到时回退到配置的 HandlerId
+- ✅ 换机器 / 重装系统后不再需要手动修改 HandlerId 数字
+
 **v1.3 - 2026-09-01**
 - ✅ Server酱 收费，迁移至 PushPlus（免费微信推送）
 - ✅ 配置项由 `SendKey` 改为 `Token`
 - ✅ 已验证实名认证 PushPlus 账号推送功能正常
 
-**v1.2**
+**v1.2 - 2026-08-25**
 - ✅ 修复 config.ini UTF-8 BOM 导致解析失败
 
-**v1.1**
+**v1.1 - 2026-08-24**
+- ✅ 通知格式改为 `设备名称 online/offline`
+
+**v1.0 - 2026-08-24**
 - ✅ 支持读取 Windows 通知中心数据库
 - ✅ 自动识别向日葵主机上下线通知
 - ✅ 翻译为英文发送到微信（解决中文编码问题）
